@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"encoding/base64"
-	"encoding/hex"
 	"fmt"
+	"gin-websocket-demo/ws"
 	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
@@ -47,22 +47,21 @@ func WsHandShake(ctx *gin.Context) {
 	conn.Write(buffer.Bytes())
 	go handleWsConn(conn, buf)
 }
+func TlsHandShake() {
+
+}
 
 func handleWsConn(conn net.Conn, buf *bufio.ReadWriter) {
-	buffer := make([]byte, 10240)
+	wsConn := ws.Init(conn)
 	for {
-		fmt.Println(hex.EncodeToString(buffer))
-
-		lens, err := conn.Read(buffer)
-		if lens > 0 {
-			fmt.Println(lens, err)
-			fmt.Println(buffer)
-			fmt.Println(string(buffer))
-		}
-
+		frame := wsConn.ReadMessage()
+		fmt.Println(string(frame.Data))
+		wsConn.SendMessage()
 	}
 
 }
+
+
 
 func main() {
 	server := gin.Default()
