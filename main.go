@@ -51,17 +51,18 @@ func TlsHandShake() {
 
 }
 
+/**
+处理连接
+*/
 func handleWsConn(conn net.Conn, buf *bufio.ReadWriter) {
 	wsConn := ws.Init(conn)
 	for {
 		frame := wsConn.ReadMessage()
 		fmt.Println(string(frame.Data))
-		wsConn.SendMessage()
+
 	}
 
 }
-
-
 
 func main() {
 	server := gin.Default()
